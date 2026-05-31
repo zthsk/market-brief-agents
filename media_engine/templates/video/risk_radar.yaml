@@ -1,0 +1,55 @@
+template_id: risk_radar
+name: Risk Radar
+story_types: [risk, downside, caution]
+target_min_duration: 35
+target_max_duration: 55
+fallback_template_id: three_things
+scene_slots:
+  - slot_id: hook
+    card_type: hook_card
+    narration_role: hook
+    visual_style: red_risk
+    motion: punch_in
+    caption_style: risk_caption
+    required_fields: [ticker, headline]
+    optional_fields: [company_name]
+  - slot_id: headline
+    card_type: news_headline_card
+    narration_role: catalyst
+    visual_style: neutral_news
+    motion: slide_up
+    caption_style: default_caption
+    required_fields: [headline]
+    optional_fields: [source_label]
+  - slot_id: risk
+    card_type: risk_card
+    narration_role: risk
+    visual_style: red_risk
+    motion: warning_pulse
+    caption_style: risk_caption
+    required_fields: []
+    optional_fields: [risk]
+  - slot_id: price_move
+    card_type: price_move_card
+    narration_role: price_move
+    visual_style: dark_grid
+    motion: stat_reveal
+    caption_style: default_caption
+    required_fields: [price_change_pct]
+    optional_fields: [price]
+  - slot_id: takeaway
+    card_type: takeaway_card
+    narration_role: takeaway
+    visual_style: blue_gradient
+    motion: takeaway_hold
+    caption_style: emphasis_caption
+    required_fields: [takeaway]
+    optional_fields: []
+  - slot_id: outro
+    card_type: outro_disclaimer_card
+    narration_role: disclaimer
+    visual_style: gray_outro
+    motion: takeaway_hold
+    caption_style: default_caption
+    required_fields: [ticker]
+    optional_fields: [as_of]

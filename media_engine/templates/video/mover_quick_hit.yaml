@@ -1,0 +1,55 @@
+template_id: mover_quick_hit
+name: Mover Quick Hit
+story_types: [price_move, news, momentum]
+target_min_duration: 30
+target_max_duration: 45
+fallback_template_id: three_things
+scene_slots:
+  - slot_id: hook
+    card_type: hook_card
+    narration_role: hook
+    visual_style: green_momentum
+    motion: punch_in
+    caption_style: emphasis_caption
+    required_fields: [ticker, headline]
+    optional_fields: [company_name, price_change_pct]
+  - slot_id: price_move
+    card_type: price_move_card
+    narration_role: price_move
+    visual_style: green_momentum
+    motion: stat_reveal
+    caption_style: emphasis_caption
+    required_fields: [price_change_pct]
+    optional_fields: [price]
+  - slot_id: headline
+    card_type: news_headline_card
+    narration_role: catalyst
+    visual_style: neutral_news
+    motion: slide_up
+    caption_style: default_caption
+    required_fields: [headline]
+    optional_fields: [source_label]
+  - slot_id: chart
+    card_type: chart_card
+    narration_role: chart
+    visual_style: dark_grid
+    motion: chart_pan
+    caption_style: default_caption
+    required_fields: []
+    optional_fields: [chart_path]
+  - slot_id: takeaway
+    card_type: takeaway_card
+    narration_role: takeaway
+    visual_style: blue_gradient
+    motion: takeaway_hold
+    caption_style: emphasis_caption
+    required_fields: [takeaway]
+    optional_fields: []
+  - slot_id: outro
+    card_type: outro_disclaimer_card
+    narration_role: disclaimer
+    visual_style: gray_outro
+    motion: takeaway_hold
+    caption_style: default_caption
+    required_fields: [ticker]
+    optional_fields: [as_of]

@@ -1,0 +1,59 @@
+[project]
+name = "market-brief-agents"
+version = "0.1.0"
+description = "Local-first financial news and short-form video generation MVP."
+requires-python = ">=3.11"
+dependencies = [
+  "lxml>=5.3",
+  "matplotlib>=3.8",
+  "openai>=1.30",
+  "pandas>=2.2",
+  "pandas-market-calendars>=4.4",
+  "pillow>=10.3",
+  "pydantic>=2.7",
+  "pyyaml>=6.0.3",
+  "requests>=2.32",
+  "streamlit>=1.35",
+  "yfinance>=0.2.40",
+]
+
+[project.optional-dependencies]
+agent = [
+  "langchain-core>=1.0",
+  "langgraph>=1.0",
+  "langgraph-checkpoint-sqlite>=3.0",
+]
+dev = [
+  "pytest>=8.2",
+  "ruff>=0.4",
+]
+
+[project.scripts]
+marketbrief = "backend.cli:main"
+
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = [
+  "agentic",
+  "backend",
+  "jobs",
+  "media_engine",
+  "media_engine.schemas",
+  "media_engine.templates",
+  "models",
+  "services",
+]
+
+[tool.setuptools.package-data]
+"media_engine.templates" = ["video/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

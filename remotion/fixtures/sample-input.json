@@ -1,0 +1,98 @@
+{
+  "assets": [],
+  "public_dir": null,
+  "scenes": [
+    {
+      "asset_public_paths": [],
+      "bullets": [],
+      "caption_beats": [
+        {
+          "end_seconds": 3.8,
+          "scene_index": 0,
+          "start_seconds": 0.2,
+          "text": "Adobe jumped 6% today"
+        }
+      ],
+      "caption_style": "default_caption",
+      "caption_text": "Adobe jumped 6% today",
+      "card_type": "hook_card",
+      "chart": null,
+      "duration_seconds": 4,
+      "end_seconds": 4,
+      "headline": "Adobe jumped 6% today",
+      "detail_text": "Investors reacted to a new catalyst and repriced the enterprise software setup.",
+      "motion": "punch_in",
+      "narration": "Adobe jumped today after investors reacted to a new catalyst.",
+      "scene_index": 0,
+      "scene_type": "hook",
+      "slot_id": "hook",
+      "source_ids": [],
+      "sources": [],
+      "start_seconds": 0,
+      "subheadline": "A sharp move needs context",
+      "visual_beats": [],
+      "visual_style": "dark_grid"
+    },
+    {
+      "asset_public_paths": [],
+      "bullets": [],
+      "caption_beats": [
+        {
+          "end_seconds": 7.8,
+          "scene_index": 1,
+          "start_seconds": 4.2,
+          "text": "The chart gives price context"
+        }
+      ],
+      "caption_style": "default_caption",
+      "caption_text": "The chart gives price context",
+      "card_type": "chart_card",
+      "chart": {
+        "points": [
+          {"change_percent": 0, "close": 241, "date": "2026-05-22", "volume": 1000},
+          {"change_percent": 0, "close": 242.5, "date": "2026-05-23", "volume": 1120},
+          {"change_percent": 0, "close": 243.2, "date": "2026-05-24", "volume": 1180},
+          {"change_percent": 0, "close": 247.1, "date": "2026-05-27", "volume": 1350},
+          {"change_percent": 0, "close": 251.3, "date": "2026-05-28", "volume": 1500},
+          {"change_percent": 6.4, "close": 256.79, "date": "2026-05-29", "volume": 1800}
+        ],
+        "source": "latest market snapshot",
+        "synthetic": true,
+        "title": "Price context"
+      },
+      "duration_seconds": 4,
+      "end_seconds": 8,
+      "headline": "Chart check",
+      "detail_text": "The latest snapshot shows a sharper move than the recent range.",
+      "motion": "chart_pan",
+      "narration": "The chart still gives useful price context.",
+      "scene_index": 1,
+      "scene_type": "chart",
+      "slot_id": "chart",
+      "source_ids": [],
+      "sources": [],
+      "start_seconds": 4,
+      "subheadline": "Price context",
+      "visual_beats": [],
+      "visual_style": "dark_grid"
+    }
+  ],
+  "template": {
+    "scene_order": ["hook_card", "chart_card"],
+    "template_id": "three_things",
+    "template_name": "Three Things"
+  },
+  "video": {
+    "change_pct": "+6.4%",
+    "company": "Adobe",
+    "date": "2026-05-29",
+    "direction": "up",
+    "disclaimer": "Educational only. Not financial advice.",
+    "fps": 30,
+    "height": 1920,
+    "price": "$256.79",
+    "ticker": "ADBE",
+    "total_duration_seconds": 8,
+    "width": 1080
+  }
+}

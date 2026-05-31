@@ -1,0 +1,55 @@
+template_id: bull_vs_bear
+name: Bull vs Bear
+story_types: [mixed, earnings, debate]
+target_min_duration: 35
+target_max_duration: 55
+fallback_template_id: three_things
+scene_slots:
+  - slot_id: hook
+    card_type: hook_card
+    narration_role: hook
+    visual_style: dark_grid
+    motion: punch_in
+    caption_style: emphasis_caption
+    required_fields: [ticker, headline]
+    optional_fields: [company_name]
+  - slot_id: bull_bear
+    card_type: bull_bear_card
+    narration_role: bull_bear
+    visual_style: dark_grid
+    motion: split_reveal
+    caption_style: default_caption
+    required_fields: []
+    optional_fields: [catalyst, risk]
+  - slot_id: chart
+    card_type: chart_card
+    narration_role: chart
+    visual_style: dark_grid
+    motion: chart_pan
+    caption_style: default_caption
+    required_fields: []
+    optional_fields: [chart_path]
+  - slot_id: evidence
+    card_type: three_bullet_card
+    narration_role: evidence
+    visual_style: blue_gradient
+    motion: bullet_stagger
+    caption_style: default_caption
+    required_fields: []
+    optional_fields: [source_label]
+  - slot_id: takeaway
+    card_type: takeaway_card
+    narration_role: takeaway
+    visual_style: blue_gradient
+    motion: takeaway_hold
+    caption_style: emphasis_caption
+    required_fields: [takeaway]
+    optional_fields: []
+  - slot_id: outro
+    card_type: outro_disclaimer_card
+    narration_role: disclaimer
+    visual_style: gray_outro
+    motion: takeaway_hold
+    caption_style: default_caption
+    required_fields: [ticker]
+    optional_fields: [as_of]
