@@ -32,8 +32,17 @@ The graph lives in `agentic/` and has these nodes:
 - `finalize_run`
 
 If LangGraph is installed with the `agent` extra, the same node functions are compiled through
-`StateGraph`. Without that extra, a local sequential runner executes the same graph contract so the
-public demo works with no additional dependencies.
+`StateGraph` with SQLite checkpointing. Without that extra, a local sequential runner executes the
+same graph contract so the public demo works with no additional dependencies.
+
+Checkpoint and pause controls:
+
+- Checkpoints are stored in `data/langgraph_checkpoints.sqlite`.
+- Run artifacts are stored in `outputs/agent_runs/{thread_id}.json`.
+- `--interrupt-before-script` pauses before script generation.
+- `--interrupt-before-render` pauses before video rendering.
+- `--resume --thread-id ...` resumes from the saved checkpoint/run state.
+- Each node records timing, compact input/output summaries, and error counts.
 
 ## Data Boundaries
 

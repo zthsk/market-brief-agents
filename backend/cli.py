@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 
-from agentic.graph import inspect_agent_run, run_agent_pipeline
+from agentic.graph import inspect_agent_run, list_agent_runs, run_agent_pipeline
 from jobs.autopilot import run_weekday_autopilot
 from jobs.daily_refresh import daily_market_refresh, movers_report
 from jobs.pipeline import as_json, generate_for_events, render_existing_videos, run_pipeline, status_report
@@ -135,8 +135,14 @@ def main() -> None:
     agent.add_argument("--skip-render", action=argparse.BooleanOptionalAction, default=True)
     agent.add_argument("--force-script", action="store_true")
     agent.add_argument("--event-id", type=int, action="append", default=None)
+    agent.add_argument("--interrupt-before-script", action="store_true")
+    agent.add_argument("--interrupt-before-render", action="store_true")
+    agent.add_argument("--resume", action="store_true")
+    agent.add_argument("--checkpoint-path", default=None)
     inspect_agent = subparsers.add_parser("inspect-agent-run")
     inspect_agent.add_argument("--thread-id", required=True)
+    list_agent = subparsers.add_parser("list-agent-runs")
+    list_agent.add_argument("--limit", type=int, default=20)
 
     args = parser.parse_args()
     if args.command == "init-db":
@@ -299,6 +305,11 @@ def main() -> None:
     elif args.command == "movers-report":
         print(as_json(movers_report(date_value=args.date, limit=args.limit)))
     elif args.command == "run-agent-pipeline":
+        interrupts = []
+        if args.interrupt_before_script:
+            interrupts.append("generate_scripts")
+        if args.interrupt_before_render:
+            interrupts.append("render_or_skip_videos")
         print(
             as_json(
                 run_agent_pipeline(
@@ -307,11 +318,16 @@ def main() -> None:
                     skip_render=args.skip_render,
                     force_script=args.force_script,
                     event_ids=args.event_id,
+                    interrupt_before=interrupts,
+                    resume=args.resume,
+                    checkpoint_path=args.checkpoint_path,
                 )
             )
         )
     elif args.command == "inspect-agent-run":
         print(as_json(inspect_agent_run(args.thread_id)))
+    elif args.command == "list-agent-runs":
+        print(as_json({"runs": list_agent_runs(args.limit)}))
 
 
 def _limit_parser(subparsers, name: str):

@@ -6,10 +6,14 @@ visible and measurable.
 
 ## Milestone 1: Agent Orchestration
 
-- Compile the existing graph through LangGraph when `uv sync --extra agent` is used.
-- Add SQLite checkpointing for true resume/replay by thread id.
-- Surface per-node timing, inputs, outputs, and error summaries in the dashboard.
-- Add human-in-the-loop interrupts before script generation and before video rendering.
+Status: complete.
+
+- The graph compiles through LangGraph when `uv sync --extra agent` is used.
+- SQLite checkpoints are written to `data/langgraph_checkpoints.sqlite`.
+- Runs can pause and resume by `thread_id`.
+- Per-node timing, compact input/output summaries, and error counts are written to run artifacts.
+- The Streamlit dashboard has an Agent Runs page for traces, status, errors, and resume controls.
+- Human-in-the-loop pause gates are available before script generation and video rendering.
 
 ## Milestone 2: RAG Pipeline
 

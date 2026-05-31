@@ -20,6 +20,7 @@ BLOCKED_PATH_PARTS = (
 )
 GENERATED_SUFFIXES = (
     ".db",
+    ".sqlite",
     ".mp4",
     ".mov",
     ".wav",

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from agentic.graph import inspect_agent_run, run_agent_pipeline
+from agentic.graph import StateGraph, inspect_agent_run, run_agent_pipeline
 from agentic.rag import retrieve_context
 from models.database import query
 from services.demo_data import load_synthetic_demo_data
@@ -45,3 +45,34 @@ def test_agent_pipeline_demo_skip_render_writes_run_artifact(tmp_path: Path, mon
     inspected = inspect_agent_run("demo-test")
     assert inspected["found"] is True
     assert inspected["state"]["summary"]["ready"] is True
+    assert inspected["state"]["node_traces"]
+
+
+def test_agent_pipeline_interrupts_and_resumes_before_script(tmp_path: Path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("MARKET_BRIEF_DB_PATH", str(tmp_path / "data/market_brief_agents.db"))
+
+    paused = run_agent_pipeline(
+        demo=True,
+        thread_id="pause-before-script",
+        skip_render=True,
+        interrupt_before=["generate_scripts"],
+    )
+
+    assert paused["status"] == "paused"
+    assert paused["paused_at"] == "generate_scripts"
+    assert paused["script_ids"] == []
+    if StateGraph is not None:
+        assert Path("data/langgraph_checkpoints.sqlite").exists()
+    assert any(trace["node"] == "retrieve_evidence_context" for trace in paused["node_traces"])
+
+    resumed = run_agent_pipeline(
+        thread_id="pause-before-script",
+        skip_render=True,
+        resume=True,
+    )
+
+    assert resumed["status"] == "completed"
+    assert resumed["summary"]["ready"] is True
+    assert resumed["script_ids"]
+    assert any(trace["node"] == "generate_scripts" for trace in resumed["node_traces"])

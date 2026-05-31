@@ -23,7 +23,7 @@ jobs:
           cache-dependency-path: |
             frontend/package-lock.json
             remotion/package-lock.json
-      - run: uv sync --extra dev
+      - run: uv sync --extra dev --extra agent
       - run: uv run ruff check .
       - run: uv run pytest
       - run: uv run python scripts/assert_public_clean.py

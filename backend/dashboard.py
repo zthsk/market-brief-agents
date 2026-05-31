@@ -12,6 +12,7 @@ import streamlit as st
 import jobs.pipeline as pipeline_module
 import media_engine.renderer as media_renderer_module
 import services.video_renderer as video_renderer_module
+from agentic.graph import inspect_agent_run, list_agent_runs, run_agent_pipeline
 from jobs.pipeline import event_context
 from media_engine.paths import script_output_dir
 from media_engine.prep import prepare_event_story, prepare_top_events, update_prepared_story
@@ -111,6 +112,7 @@ page = st.sidebar.radio(
         "Research Review",
         "Scripts & Videos",
         "Review Bundles",
+        "Agent Runs",
         "Analytics",
     ],
 )
@@ -1426,6 +1428,108 @@ def render_events_page() -> None:
         render_event_detail(event, f"event-{event['id']}")
 
 
+def render_agent_runs_page() -> None:
+    st.subheader("Agent Runs")
+    st.caption("Checkpointed orchestration runs, pause gates, node timing, and error summaries.")
+    controls = st.columns([1, 1, 1, 2])
+    thread_id = controls[0].text_input("Thread ID", value="demo-dashboard")
+    pause_script = controls[1].checkbox("Pause before script", value=True)
+    pause_render = controls[2].checkbox("Pause before render", value=False)
+    skip_render = controls[3].checkbox("Skip rendering", value=True)
+    action_cols = st.columns(3)
+    if action_cols[0].button("Run Demo Agent", type="primary"):
+        interrupts = []
+        if pause_script:
+            interrupts.append("generate_scripts")
+        if pause_render:
+            interrupts.append("render_or_skip_videos")
+        result = run_agent_pipeline(
+            demo=True,
+            thread_id=thread_id,
+            skip_render=skip_render,
+            interrupt_before=interrupts,
+        )
+        st.session_state["dashboard_notice"] = (
+            "success",
+            f"Agent run {result.get('status')} at {result.get('paused_at') or 'done'}.",
+        )
+        st.rerun()
+    if action_cols[1].button("Resume Thread"):
+        try:
+            result = run_agent_pipeline(thread_id=thread_id, resume=True, skip_render=skip_render)
+            st.session_state["dashboard_notice"] = (
+                "success",
+                f"Resumed {thread_id}: {result.get('status')}.",
+            )
+        except Exception as exc:
+            st.session_state["dashboard_notice"] = ("warning", f"Resume failed: {exc}")
+        st.rerun()
+    if action_cols[2].button("Refresh"):
+        st.rerun()
+
+    runs = list_agent_runs(limit=100)
+    if not runs:
+        st.info("No agent runs yet.")
+        return
+    metric_grid(
+        [
+            ("Runs", len(runs)),
+            ("Paused", sum(1 for run in runs if run.get("status") == "paused")),
+            ("Completed", sum(1 for run in runs if run.get("status") == "completed")),
+            ("Errors", sum(int(run.get("errors") or 0) for run in runs)),
+            ("Trace Steps", sum(int(run.get("trace_steps") or 0) for run in runs)),
+        ],
+        columns=5,
+    )
+    selected = selectable_table(runs, "agent-runs-table", height=320)
+    selected_thread = (selected or runs[0]).get("thread_id")
+    detail = inspect_agent_run(str(selected_thread))
+    if not detail.get("found"):
+        st.warning("Selected run artifact is missing.")
+        return
+    state = detail["state"]
+    st.markdown("### Run Detail")
+    metric_grid(
+        [
+            ("Status", state.get("status") or "unknown"),
+            ("Paused At", state.get("paused_at") or "none"),
+            ("Mode", state.get("mode") or "unknown"),
+            ("Scripts", len(state.get("script_ids") or [])),
+            ("Videos", len(state.get("video_paths") or [])),
+        ],
+        columns=5,
+    )
+    tabs = st.tabs(["Trace", "Summary", "Errors", "State"])
+    with tabs[0]:
+        traces = state.get("node_traces") or []
+        st.dataframe(
+            [
+                {
+                    "node": trace.get("node"),
+                    "status": trace.get("status"),
+                    "duration_ms": trace.get("duration_ms"),
+                    "errors_in": (trace.get("input") or {}).get("errors"),
+                    "errors_out": len((trace.get("output") or {}).get("errors") or []),
+                    "started_at": trace.get("started_at"),
+                }
+                for trace in traces
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+    with tabs[1]:
+        st.json(state.get("summary") or {})
+    with tabs[2]:
+        errors = state.get("errors") or []
+        if errors:
+            for error in errors:
+                st.warning(error)
+        else:
+            st.success("No recorded errors.")
+    with tabs[3]:
+        st.json(state)
+
+
 def render_analytics_page() -> None:
     st.subheader("Analytics")
     metric_grid(
@@ -1487,5 +1591,7 @@ elif page == "Scripts & Videos":
     render_scripts_videos_page()
 elif page == "Review Bundles":
     render_review_bundles_page()
+elif page == "Agent Runs":
+    render_agent_runs_page()
 elif page == "Analytics":
     render_analytics_page()
